@@ -196,7 +196,7 @@ ggplot(urtak, aes(x = postnr, y = fermetraverd)) +
 
 ### o
 
-### Samkvæmt myndritunu í lið n getum við séð að póstnúmerið í 105 er með dýrustu eignirnar en sjáum ekki endilega fjölda á eignum en getum ályktað að það hefur hæsta fermetraverðið miðað við hin tvö og 112 myndi þá vera með lægsta verðið.
+#### Samkvæmt myndritunu í lið n getum við séð að póstnúmerið í 105 er með dýrustu eignirnar en sjáum ekki endilega fjölda á eignum en getum ályktað að það hefur hæsta fermetraverðið miðað við hin tvö og 112 myndi þá vera með lægsta verðið.
 ```{r}
 # Finna gögn
 postnr105 <- mmt[mmt$postnr == 105, ]$fermetraverd
@@ -215,7 +215,7 @@ print(test_107_112)
 
 ```
 
-### Sjáum að 107 er með dýrasta fermetraverðið þannig tilgátan okkar stóðst ekki en 112 er samt sem áður með minnsta þannig það stóðst.
+#### Sjáum að 107 er með dýrasta fermetraverðið þannig tilgátan okkar stóðst ekki en 112 er samt sem áður með minnsta þannig það stóðst.
 
 ### p
 
@@ -238,4 +238,4 @@ alikan <- lm(einingar ~ verd)
 # Niðurstöður
 summary(alikan)
 ```
-### Skurðpunkturinn er 44.23 og hallatalan er 0.001527. Skýringarhlutfallið er 0.4676. Skurðpunkturinn er mæling á væntanlegu kaupverði þegar stærð eignarinnar er núll. Hallatalan segir til um aukningu í kaupverði fyrir hverja einingu í stærð eignarinnar.Hallatalan segir okkur að kaupverðið aukist um 0.001527 fyrir hverja einingu í stærð eignarinnar. Þetta segir okkur að stærð eignarinnar hafi áhrif á kaupverðið þótt það sé lítil aukning.
+#### Skurðpunkturinn er 44.23 og hallatalan er 0.001527. Skýringarhlutfallið er 0.4676. Skurðpunkturinn er mæling á væntanlegu kaupverði þegar stærð eignarinnar er núll. Hallatalan segir til um aukningu í kaupverði fyrir hverja einingu í stærð eignarinnar.Hallatalan segir okkur að kaupverðið aukist um 0.001527 fyrir hverja einingu í stærð eignarinnar. Þetta segir okkur að stærð eignarinnar hafi áhrif á kaupverðið þótt það sé lítil aukning.
