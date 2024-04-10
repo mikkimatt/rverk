@@ -1,0 +1,184 @@
+---
+title: "Kaupskrá fasteigna"
+output:
+  html_document:
+    css: styles.css
+    
+---
+
+# Fyrra R verkefni
+## Mikael Matthíasson - mim23
+## Mikael Máni Sveinsson - mms27
+## Tómas Blær Guðmundsson - tbg16
+
+
+
+# 1 - Gagnamöndl
+
+### a
+#### Lesa inn gögn.
+```{r lesa gögn}
+library(tidyverse)
+mmt <- read_csv2("https://ahj.hi.is/kaupskra.csv", locale = locale(encoding = "ISO8859-1"))
+```
+### b og e
+#### Filtera eignir eftir hvort þær séu fullbúin fjölbýli eða sérbýli með nothæfan samning.
+```{r filtera gögn}
+mmt <- mmt %>% filter(fullbuid == 1 
+  & tegund %in% c("Fjolbyli", "Serbyli") 
+  & onothaefur_samningur == 0
+  & postnr %in% c(105, 107, 112))
+  
+```
+### c
+#### Finna fermetraverð.
+```{r fermetraverd}
+mmt$fermetraverd <- round(mmt$kaupverd / mmt$einflm, digits = 1)
+```
+### d
+#### Finna söluár.
+```{r soluar}
+mmt$ar_selt <- as.numeric(format(mmt$utgdag,'%Y'))
+```
+### f
+#### Taka út column 22.
+```{r taka ut 22}
+str(mmt)
+mmt <- subset(mmt, select = -...22)
+```
+
+
+
+# 2 - Myndræn framsetning
+
+### g
+#### Graf fyrir stærð eigna.
+```{r staerd eigna}
+ggplot(data = mmt, aes(x = einflm)) + geom_histogram(bins = 30, fill = "red", color = "black") + labs(title = "Stærð eigna", x = "Stærð", y = "Fjöldi")
+```
+
+### h
+#### Graf fyrir fjölda eigna í völdum póstnúmerum eftir tegund.
+```{r fjöldi eigna eftir postnr og tegund}
+ggplot(data = mmt, aes(x = as.factor(postnr), fill = tegund)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Póstnúmer", y = "Fjöldi eigna", title = "Fjöldi eigna eftir póstnúmeri og tegund") +
+  scale_fill_manual(values = c("Fjolbyli" = "red", "Serbyli" = "blue")) +
+  theme_minimal()
+```
+
+### i
+#### Graf fyrir stærð eigna eftir póstnúmeri.
+```{r staerd eigna eftir post}
+ggplot(data = mmt, aes(x = as.factor(postnr), y = einflm)) + 
+  geom_boxplot(fill = "skyblue", color = "black") +
+  labs(x = "Póstnúmer", y = "Stærð eignar", title = "Dreifing stærð eigna eftir póstnúmerum 105, 107 og 112")
+```
+
+### j
+#### Graf fyrir samband söluárs og kaupverðs eftir póstnúmerum.
+```{r samband soluars og kaupverd, postnr}
+ggplot(data = mmt, aes(x = einflm, y = kaupverd, color = factor(year(utgdag)))) +
+  geom_point() +
+  facet_grid(~factor(postnr)) +
+  labs(x = "Stærð eignar", y = "Verð eignar", 
+       title = "Samband milli söluárs og kaupverðs á milli póstnúmera",
+       color = "Söluár") +
+  theme_minimal()
+```
+
+
+
+# 3 - Töflur
+
+### k
+#### Tafla fyrir fjölda eigna eftir tegund og póstnúmeri.
+```{r tafla eigna i postnr}
+library(kableExtra)
+posteftireign <- table(mmt$postnr, mmt$tegund)
+
+row_names <- c("105", "107", "112")
+col_names <- c("Fjölbýli", "Sérbýli")
+dimnames(posteftireign) <- list(row_names, col_names)
+
+kable(posteftireign, "html") %>%
+  kable_styling(full_width = TRUE) %>%
+  column_spec(1:3, background = "white")
+```
+
+### l
+#### Tafla fyrir hlutfall milli fjölbýla og sérbýla eftir póstnúmerum.
+```{r hlutfall byla, postnr}
+library(kableExtra)
+posttable <- table(mmt$postnr, mmt$tegund)
+hlutfall <- prop.table(posttable, margin = 1) * 100
+
+row_names <- c("105", "107", "112")
+col_names <- c("Fjölbýli %", "Sérbýli %")
+dimnames(hlutfall) <- list(row_names, col_names)
+
+kable(hlutfall, "html") %>%
+  kable_styling(full_width = TRUE) %>%
+  column_spec(1:3, background = "white")
+```
+
+### m
+#### Tafla fyrir meðaltal, miðgildi, staðalfrávik á fermetraverði eftir árum, póstnúmerum og tegund.
+
+```{r med, mid, stad per fm}
+flokka_tafla <- mmt %>%
+  group_by(ar_selt, postnr, tegund) %>%
+  summarise(
+    medalverd_fm = mean(fermetraverd),
+    midgildi_fm = median(fermetraverd),
+    stadfra_fm = sd(fermetraverd),
+    fjoldi_eigna = n()
+  )
+  
+flokka_tafla <- flokka_tafla %>%
+  rename(
+    Sölu_ár = ar_selt,
+    Póstnúmer = postnr,
+    Tegund = tegund,
+    Meðalverð = medalverd_fm,
+    Miðgildisverð = midgildi_fm,
+    Staðalfrávik = stadfra_fm,
+    Fjöldi = fjoldi_eigna
+  )
+  
+kable(flokka_tafla, "html") %>%
+  kable_styling(full_width = TRUE, bootstrap_options = "striped", font_size = 14)
+```
+
+
+
+# 4 - Líkindafræði
+
+### n
+### i
+#### Líkur á að ein eign sé einbýlishús
+```{r}
+dbinom(1,3,0.2)
+```
+
+### ii
+#### Líkur á að fleiri en ein eign sé einbýlishús
+```{r}
+pbinom(2,3,0.2)
+```
+
+### o
+### i
+#### Líkur á að eign sé stærri en 180 fm
+```{r}
+1 - pnorm(180, 170, 20)
+```
+
+### ii
+#### Stærðin á húsi Jonna verður að vera stærri en útkomman svo það sé í hópi 5% stærstu eigna í hverfinu
+```{r}
+qnorm(0.95, 170, 20)
+```
+
+
+

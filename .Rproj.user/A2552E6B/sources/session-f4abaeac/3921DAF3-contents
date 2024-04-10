@@ -1,0 +1,130 @@
+---
+title: "Seinna R verkefni"
+output:
+  html_document:
+    css: styles.css
+---
+
+## Mikael Matthíasson - mim23
+## Mikael Máni Sveinsson - mms27
+## Tómas Blær Guðmundsson - tbg16
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Hluti 1
+## Lesa og laga gögn
+
+### a
+#### Libraries
+```{r libraries, include=FALSE}
+library(tidyverse)
+library(kableExtra)
+
+```
+
+```{r innlestur}
+mmt <- read_csv2("https://ahj.hi.is/kaupskra.csv", locale = locale(encoding = "ISO8859-1"))
+```
+### b og e
+
+#### Filtera eignir eftir hvort þær séu fullbúin fjölbýli eða sérbýli með nothæfan samning.
+```{r filtera gögn}
+mmt <- mmt %>% filter(fullbuid == 1 
+  & tegund %in% c("Fjolbyli", "Serbyli") 
+  & onothaefur_samningur == 0
+  & postnr %in% c(105, 107, 112))
+  
+```
+### c
+#### Finna fermetraverð.
+```{r fermetraverd}
+mmt$fermetraverd <- round(mmt$kaupverd / mmt$einflm, digits = 1)
+```
+### d
+#### Finna söluár.
+```{r soluar}
+mmt$ar <- as.numeric(format(mmt$utgdag,'%Y'))
+```
+
+### f
+#### Taka út column 22.
+```{r taka ut 22}
+str(mmt)
+mmt <- subset(mmt, select = -...22)
+```
+
+### g
+#### Útbúa úrtak úr þýðinu
+```{r setja upp urtak}
+set.seed(11)
+urtak <- mmt %>%
+  group_by(postnr) %>%
+  sample_n(replace = TRUE, size = 200)
+
+```
+
+# Hluti 2
+## Töflur
+
+### h 
+#### Fjöldi eigna eftir hverfunum þremur eftir gerð eignar
+```{r fjoldi eigna eftir gerd}
+urtak_tafla <- table(urtak$postnr, urtak$tegund)
+
+rownames(urtak_tafla) <- c('Póstnr. 105', 'Póstnr. 107', 'Póstnr. 112')
+colnames(urtak_tafla) <- c('Sérbýli', 'Fjölbýli')
+
+kable(urtak_tafla, "html") %>%
+  kable_styling(full_width = TRUE) %>%
+  column_spec(1:3, background = "white")
+
+```
+
+### i
+#### Hlutfall sérbýla og fjölbýla eftir póstnúmerum.
+```{r hlutfoll eigna postnr}
+fjoldi <- table(urtak$postnr, urtak$tegund)
+
+heild <- rowSums(fjoldi)
+
+hlutfoll <- fjoldi / heild
+
+prosenta <- round(hlutfoll * 100, 2)
+
+hlutfoll_dat <- cbind(prosenta[, "Fjolbyli"], prosenta[, "Serbyli"])
+
+rownames(hlutfoll_dat) <- rownames(fjoldi)
+colnames(hlutfoll_dat) <- c("Sérbýli %", "Fjölbýli %")
+
+kable(hlutfoll_dat, "html") %>%
+  kable_styling(full_width = TRUE) %>%
+  column_spec(1:3, background = "white")
+```
+
+### j
+#### Kí-kvaðrat próf til athuga hvort hlutfall fjölbýla sé mismunandi eftir póstnr.
+```{r tilgatuprof}
+
+#Skiptum upp gögnum svo að við séum einungis að athuga fyrir fjölbýli.
+fjolbyli <- subset(urtak, tegund == "Fjolbyli")
+
+# Talning fyrir fjölbýli eftir hverfum.
+fjoldi <- table(fjolbyli$postnr)
+
+#Framkvæmum kí-kvaðrat próf og höfum prófstærðina sem α = 0.05.
+ki_kvadrat_prof <- chisq.test(fjoldi)
+
+print(ki_kvadrat_prof)
+
+```
+#### Þar sem p-gildið er stærra en 0.05 eða p-value = 0.3102, höfnum við núlltilgátunni H0 um að hlutfall fjölbýla sé misjafnt eftir hverfum. Við höfum þ.a.l. ekki fullnæg gögn til þess að sanna að það sé misjafnt eftir hverfum.
+
+
+# Hluti 3
+## Tilgátupróf
+
+### k
+#### 
+
+
