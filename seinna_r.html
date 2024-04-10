@@ -864,13 +864,267 @@ print(ki_kvadrat_prof)</code></pre>
 ## data:  fjoldi
 ## X-squared = 2.3411, df = 2, p-value = 0.3102</code></pre>
 <pre class="r"><code>#Þar sem p-gildið er stærra en 0.05 eða p-value = 0.3102, höfnum við núlltilgátunni H0 um að hlutfall fjölbýla sé misjafnt eftir hverfum. Við höfum þ.a.l. ekki fullnæg gögn til þess að sanna að það sé misjafnt eftir hverfum.</code></pre>
-<p>#Hluti 3 ## Tilgátupróf</p>
 </div>
 </div>
+</div>
+</div>
+<div id="hluti-3" class="section level1">
+<h1>Hluti 3</h1>
+<div id="tilgátupróf" class="section level2">
+<h2>Tilgátupróf</h2>
 <div id="k" class="section level3">
 <h3>k</h3>
-<div id="section" class="section level4">
-<h4></h4>
+<div id="t-próf-til-að-ákvarða-verðmun-á-fermetrum-í-mismunandi-húsnæðistegundum" class="section level4">
+<h4>T-próf til að ákvarða verðmun á fermetrum í mismunandi
+húsnæðistegundum</h4>
+</div>
+<div id="h0-meðalverð-á-fermetra-er-mismunandi-eftir-húsnæðistegund" class="section level4">
+<h4>H0 = Meðalverð á fermetra er mismunandi eftir húsnæðistegund</h4>
+</div>
+<div id="h1-meðalverð-á-fermetra-er-ekki-mismunandi-eftir-húsnæðistegund" class="section level4">
+<h4>H1 = Meðalverð á fermetra er ekki mismunandi eftir
+húsnæðistegund</h4>
+<pre class="r"><code>#Síum gögnin þannig að við erum með tvö þýði, fyrir sérbýli og fjölbýli 
+serbyli  &lt;- urtak %&gt;% filter(tegund == &#39;Serbyli&#39;)
+fjolbyli  &lt;- urtak %&gt;% filter(tegund == &#39;Fjolbyli&#39;)
+
+#Framkvæmum tveggja hliða t-próf og höfum prófstærðina sem α = 0.05.
+t_nidurst &lt;- t.test(serbyli$fermetraverd, fjolbyli$fermetraverd, alternative = &quot;two.sided&quot;)
+
+print(t_nidurst)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  serbyli$fermetraverd and fjolbyli$fermetraverd
+## t = -1.3389, df = 51.434, p-value = 0.1865
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -69.98231  13.97580
+## sample estimates:
+## mean of x mean of y 
+##  369.2558  397.2591</code></pre>
+</div>
+<div id="þar-sem-p-gildið-er-stærra-en-0.05-eða-p-value-0.1865-höfnum-við-núlltilgátunni-h0-um-að-meðalverð-á-fermetra-sé-misjafnt-eftir-húsnæðistegundum.-við-höfum-þ.a.l.-ekki-fullnæg-gögn-til-þess-að-sanna-að-meðalverðið-á-fermetra-sé-mismunandi-eftir-tegundum." class="section level4">
+<h4>Þar sem p-gildið er stærra en 0.05 eða p-value = 0.1865 höfnum við
+núlltilgátunni H0 um að meðalverð á fermetra sé misjafnt eftir
+húsnæðistegundum. Við höfum þ.a.l. ekki fullnæg gögn til þess að sanna
+að meðalverðið á fermetra sé mismunandi eftir tegundum.</h4>
+</div>
+</div>
+<div id="l" class="section level3">
+<h3>l</h3>
+<div id="nýrri-breytu-bætt-við-gagnaúrtakið" class="section level4">
+<h4>Nýrri breytu bætt við gagnaúrtakið</h4>
+<pre class="r"><code>#Bætum við breytunni staerd200 þar sem að fasteignir stærri en 200fm fá gildið Stærri, en hinar Minni
+urtak &lt;- urtak %&gt;% mutate(staerd200 = ifelse(einflm &gt; 200, &#39;Stærri&#39;, &#39;Minni&#39;))
+
+# Birtum 10 raðir af nýja gagnaúrtakinu með völdum breytum.
+cols &lt;- head(subset(urtak, select = c(postnr, tegund, einflm, staerd200)), 10)
+
+kable(cols, &quot;html&quot;) %&gt;%
+  kable_styling(full_width = TRUE) %&gt;%
+  column_spec(1:4, background = &quot;white&quot;)</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+postnr
+</th>
+<th style="text-align:left;">
+tegund
+</th>
+<th style="text-align:right;">
+einflm
+</th>
+<th style="text-align:left;">
+staerd200
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;background-color: white !important;">
+105
+</td>
+<td style="text-align:left;background-color: white !important;">
+Fjolbyli
+</td>
+<td style="text-align:right;background-color: white !important;">
+225.7
+</td>
+<td style="text-align:left;background-color: white !important;">
+Stærri
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: white !important;">
+105
+</td>
+<td style="text-align:left;background-color: white !important;">
+Fjolbyli
+</td>
+<td style="text-align:right;background-color: white !important;">
+66.7
+</td>
+<td style="text-align:left;background-color: white !important;">
+Minni
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: white !important;">
+105
+</td>
+<td style="text-align:left;background-color: white !important;">
+Fjolbyli
+</td>
+<td style="text-align:right;background-color: white !important;">
+53.8
+</td>
+<td style="text-align:left;background-color: white !important;">
+Minni
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: white !important;">
+105
+</td>
+<td style="text-align:left;background-color: white !important;">
+Serbyli
+</td>
+<td style="text-align:right;background-color: white !important;">
+264.0
+</td>
+<td style="text-align:left;background-color: white !important;">
+Stærri
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: white !important;">
+105
+</td>
+<td style="text-align:left;background-color: white !important;">
+Fjolbyli
+</td>
+<td style="text-align:right;background-color: white !important;">
+80.6
+</td>
+<td style="text-align:left;background-color: white !important;">
+Minni
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: white !important;">
+105
+</td>
+<td style="text-align:left;background-color: white !important;">
+Fjolbyli
+</td>
+<td style="text-align:right;background-color: white !important;">
+140.3
+</td>
+<td style="text-align:left;background-color: white !important;">
+Minni
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: white !important;">
+105
+</td>
+<td style="text-align:left;background-color: white !important;">
+Fjolbyli
+</td>
+<td style="text-align:right;background-color: white !important;">
+76.1
+</td>
+<td style="text-align:left;background-color: white !important;">
+Minni
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: white !important;">
+105
+</td>
+<td style="text-align:left;background-color: white !important;">
+Fjolbyli
+</td>
+<td style="text-align:right;background-color: white !important;">
+216.4
+</td>
+<td style="text-align:left;background-color: white !important;">
+Stærri
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: white !important;">
+105
+</td>
+<td style="text-align:left;background-color: white !important;">
+Fjolbyli
+</td>
+<td style="text-align:right;background-color: white !important;">
+71.9
+</td>
+<td style="text-align:left;background-color: white !important;">
+Minni
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: white !important;">
+105
+</td>
+<td style="text-align:left;background-color: white !important;">
+Fjolbyli
+</td>
+<td style="text-align:right;background-color: white !important;">
+85.7
+</td>
+<td style="text-align:left;background-color: white !important;">
+Minni
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="m" class="section level3">
+<h3>m</h3>
+<div id="t-próf-til-að-ákvarða-verðmun-á-fasteignum-sem-eru-yfirundir-200fm" class="section level4">
+<h4>T-próf til að ákvarða verðmun á fasteignum sem eru yfir/undir
+200fm</h4>
+</div>
+<div id="h0-meðalverð-á-fermetra-er-mismunandi-eftir-því-hvort-að-fasteign-sé-undiryfir-200fm" class="section level4">
+<h4>H0 = Meðalverð á fermetra er mismunandi eftir því hvort að fasteign
+sé undir/yfir 200fm</h4>
+</div>
+<div id="h1-meðalverð-á-fermetra-er-ekki-mismunandi-eftir-því-hvort-að-fasteign-sé-undiryfir-200fm" class="section level4">
+<h4>H1 = Meðalverð á fermetra er ekki mismunandi eftir því hvort að
+fasteign sé undir/yfir 200fm</h4>
+<pre class="r"><code>#Síum gögnin þannig að við erum með tvö þýði, fyrir fasteignir yfir 200fm, og undir 200fm 
+staerri  &lt;- urtak %&gt;% filter(staerd200 == &#39;Stærri&#39;)
+minni  &lt;- urtak %&gt;% filter(staerd200 == &#39;Minni&#39;)
+
+#Framkvæmum tveggja hliða t-próf og höfum prófstærðina sem α = 0.05.
+t_nidurst &lt;- t.test(staerri$fermetraverd, minni$fermetraverd, alternative = &quot;two.sided&quot;)
+
+print(t_nidurst)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  staerri$fermetraverd and minni$fermetraverd
+## t = -2.1906, df = 31.191, p-value = 0.03608
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -91.894292  -3.293491
+## sample estimates:
+## mean of x mean of y 
+##  349.8000  397.3939</code></pre>
+</div>
+<div id="þar-sem-p-gildið-er-minna-en-0.05-eða-p-value-0.03608-höfnum-við-ekki-núlltilgátunni-h0-um-að-meðalverð-á-fermetra-sé-misjafnt-eftir-því-hvort-að-fasteignir-séu-undiryfir-200fm.-við-höfum-þ.a.l.-fullnægjandi-gögn-til-þess-að-sanna-að-meðalverð-fermetra-sé-í-raun-mismunandi-eftir-því-hvort-að-fasteignin-sé-undiryfir-200fm" class="section level4">
+<h4>Þar sem p-gildið er minna en 0.05 eða p-value = 0.03608 höfnum við
+ekki núlltilgátunni H0 um að meðalverð á fermetra sé misjafnt eftir því
+hvort að fasteignir séu undir/yfir 200fm. Við höfum þ.a.l. fullnægjandi
+gögn til þess að sanna að meðalverð fermetra sé í raun mismunandi eftir
+því hvort að fasteignin sé undir/yfir 200fm</h4>
 </div>
 </div>
 </div>
