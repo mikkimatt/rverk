@@ -1,7 +1,0 @@
-"0","set.seed(11)"
-"0","urtak <- mmt %>%"
-"0","  group_by(postnr) %>%"
-"0","  sample_n(replace = TRUE, size = 200)"
-"2","Error in mmt %>% group_by(postnr) %>% sample_n(replace = TRUE, size = 200) : 
-  could not find function ""%>%""
-"
