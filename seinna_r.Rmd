@@ -104,6 +104,9 @@ kable(hlutfoll_dat, "html") %>%
 
 ### j
 #### Kí-kvaðrat próf til athuga hvort hlutfall fjölbýla sé mismunandi eftir póstnr.
+
+#### H0 = Hlutfall fjölbýla er mismunandi eftir hverfum
+#### H1 = Hlutfall fjölbýla er ekki mismunandi eftir hverfum
 ```{r tilgatuprof}
 
 #Skiptum upp gögnum svo að við séum einungis að athuga fyrir fjölbýli.
@@ -116,9 +119,9 @@ fjoldi <- table(fjolbyli$postnr)
 ki_kvadrat_prof <- chisq.test(fjoldi)
 
 print(ki_kvadrat_prof)
-
-#Þar sem p-gildið er stærra en 0.05 eða p-value = 0.3102, höfnum við núlltilgátunni H0 um að hlutfall fjölbýla sé misjafnt eftir hverfum. Við höfum þ.a.l. ekki fullnæg gögn til þess að sanna að það sé misjafnt eftir hverfum.
 ```
+#### Þar sem p-gildið er stærra en 0.05 eða p-value = 0.3102, höfnum við núlltilgátunni H0 um að hlutfall fjölbýla sé misjafnt eftir hverfum. Við höfum þ.a.l. ekki fullnæg gögn til þess að sanna að það sé misjafnt eftir hverfum. Þannig að við samþykkjum H1 og segjum að hlutfallið sé ekki mismunandi eftir hverfum.
+
 
 # Hluti 3
 ## Tilgátupróf
@@ -193,7 +196,7 @@ ggplot(urtak, aes(x = postnr, y = fermetraverd)) +
 
 ### o
 
-### Samkvæmt myndritunu í lið n getum við séð að póstnúmerið í 105 er með dýrustu eignirnar en sjáum ekki endilega fjölda á eignum en getum ályktað að það er mögulega hæsta fermetraverðið miðað við hin tvö og 112 myndi þá vera með minnsta verðið.
+### Samkvæmt myndritunu í lið n getum við séð að póstnúmerið í 105 er með dýrustu eignirnar en sjáum ekki endilega fjölda á eignum en getum ályktað að það hefur hæsta fermetraverðið miðað við hin tvö og 112 myndi þá vera með lægsta verðið.
 ```{r}
 # Finna gögn
 postnr105 <- mmt[mmt$postnr == 105, ]$fermetraverd
@@ -212,7 +215,7 @@ print(test_107_112)
 
 ```
 
-### Sjáum að 107 er með dýrasta fermetraverðið þannig tilgátan stóðst ekki alveg en 112 er samt sem áður með minnsta þannig það stóðst.
+### Sjáum að 107 er með dýrasta fermetraverðið þannig tilgátan okkar stóðst ekki en 112 er samt sem áður með minnsta þannig það stóðst.
 
 ### p
 
