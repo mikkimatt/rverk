@@ -120,10 +120,59 @@ print(ki_kvadrat_prof)
 #Þar sem p-gildið er stærra en 0.05 eða p-value = 0.3102, höfnum við núlltilgátunni H0 um að hlutfall fjölbýla sé misjafnt eftir hverfum. Við höfum þ.a.l. ekki fullnæg gögn til þess að sanna að það sé misjafnt eftir hverfum.
 ```
 
-#Hluti 3
+# Hluti 3
 ## Tilgátupróf
 
 ### k
-#### 
+#### T-próf til að ákvarða verðmun á fermetrum í mismunandi húsnæðistegundum
 
+#### H0 = Meðalverð á fermetra er mismunandi eftir húsnæðistegund
+#### H1 = Meðalverð á fermetra er ekki mismunandi eftir húsnæðistegund
+```{r tprof}
 
+#Síum gögnin þannig að við erum með tvö þýði, fyrir sérbýli og fjölbýli 
+serbyli  <- urtak %>% filter(tegund == 'Serbyli')
+fjolbyli  <- urtak %>% filter(tegund == 'Fjolbyli')
+
+#Framkvæmum tveggja hliða t-próf og höfum prófstærðina sem α = 0.05.
+t_nidurst <- t.test(serbyli$fermetraverd, fjolbyli$fermetraverd, alternative = "two.sided")
+
+print(t_nidurst)
+
+```
+#### Þar sem p-gildið er stærra en 0.05 eða p-value = 0.1865 höfnum við núlltilgátunni H0 um að meðalverð á fermetra sé misjafnt eftir húsnæðistegundum. Við höfum þ.a.l. ekki fullnæg gögn til þess að sanna að meðalverðið á fermetra sé mismunandi eftir tegundum.
+
+### l
+#### Nýrri breytu bætt við gagnaúrtakið
+``` {r grouping}
+
+#Bætum við breytunni staerd200 þar sem að fasteignir stærri en 200fm fá gildið Stærri, en hinar Minni
+urtak <- urtak %>% mutate(staerd200 = ifelse(einflm > 200, 'Stærri', 'Minni'))
+
+# Birtum 10 raðir af nýja gagnaúrtakinu með völdum breytum.
+cols <- head(subset(urtak, select = c(postnr, tegund, einflm, staerd200)), 10)
+
+kable(cols, "html") %>%
+  kable_styling(full_width = TRUE) %>%
+  column_spec(1:4, background = "white")
+```
+
+### m
+#### T-próf til að ákvarða verðmun á fasteignum sem eru yfir/undir 200fm
+
+#### H0 = Meðalverð á fermetra er mismunandi eftir því hvort að fasteign sé undir/yfir 200fm
+#### H1 = Meðalverð á fermetra er ekki mismunandi eftir því hvort að fasteign sé undir/yfir 200fm
+``` {r tprof staerd200}
+
+#Síum gögnin þannig að við erum með tvö þýði, fyrir fasteignir yfir 200fm, og undir 200fm 
+staerri  <- urtak %>% filter(staerd200 == 'Stærri')
+minni  <- urtak %>% filter(staerd200 == 'Minni')
+
+#Framkvæmum tveggja hliða t-próf og höfum prófstærðina sem α = 0.05.
+t_nidurst <- t.test(staerri$fermetraverd, minni$fermetraverd, alternative = "two.sided")
+
+print(t_nidurst)
+
+```
+
+#### Þar sem p-gildið er minna en 0.05 eða p-value = 0.03608 höfnum við ekki núlltilgátunni H0 um að meðalverð á fermetra sé misjafnt eftir því hvort að fasteignir séu undir/yfir 200fm. Við höfum þ.a.l. fullnægjandi gögn til þess að sanna að meðalverð fermetra sé í raun mismunandi eftir því hvort að fasteignin sé undir/yfir 200fm
