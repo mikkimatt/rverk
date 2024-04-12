@@ -225,6 +225,7 @@ ggplot(mmt, aes(x = einflm, y = kaupverd)) +
   labs(x = "EiningarFM", y = "Kaupverð") +
   ggtitle("EiningarFM eftir kaupverði")
 ```
+
 ### q
 
 ```{r}
